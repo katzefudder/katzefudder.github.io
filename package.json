@@ -1,0 +1,45 @@
+{
+    "title": "katzefudder.de 2019",
+    "name": "katzefudder.de Template",
+    "version": "1.0.0",
+    "description": "katzefudder.de 2019",
+    "keywords": [
+        "css",
+        "sass",
+        "html",
+        "responsive",
+        "theme",
+        "template"
+    ],
+    "homepage": "www.katzefudder.de",
+    "bugs": {
+        "url": "https://github.com/katzefudder/katzefudder.github.io/issues",
+        "email": "flo@katzefudder.de"
+    },
+    "license": "MIT",
+    "author": "Florian Dehn <flo[at]katzefudder[dot]]de>",
+    "contributors": [
+        "Florian Dehn (http://www.katzefudder.de/)"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/katzefudder/katzefudder.github.io.git"
+    },
+    "devDependencies": {
+        "gulp-autoprefixer": "^6.0.0",
+        "gulp-concat": "^2.6.1",
+        "gulp-cssmin": "^0.2.0",
+        "gulp-imagemin": "^4.1.0",
+        "node-sass": "^4.9.3"
+    },
+    "dependencies": {
+        "browser-sync": "^2.26.3",
+        "grunt": "^1.0.3",
+        "gulp": "^4.0.0",
+        "gulp-clean-css": "^3.10.0",
+        "gulp-header": "^2.0.5",
+        "gulp-minify": "^3.1.0",
+        "gulp-rename": "^1.4.0",
+        "gulp-sass": "^4.0.2"
+    }
+}
