@@ -2,6 +2,8 @@ version: '3'
 services:
   web:
     build: .
+    networks:
+      - katzefudder
     ports:
     - "4000:4000"
     volumes:
@@ -10,6 +12,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile_nginx
+    networks:
+      - katzefudder
     ports:
       - "80:80"
     volumes:
@@ -20,3 +24,6 @@ services:
     environment:
      - NGINX_HOST=localhost
      - NGINX_PORT=80
+
+networks:
+  katzefudder:

@@ -1,10 +1,15 @@
 var gulp = require('gulp');
 var sass = require('gulp-sass');
 var header = require('gulp-header');
+var inject = require('gulp-inject');
 var cleanCSS = require('gulp-clean-css');
+var concatCss = require('gulp-concat-css');
+var concatJs = require('gulp-concat');
+var minifyCSS = require('gulp-minify-css');
 var rename = require("gulp-rename");
 var minify = require('gulp-minify');
 var pkg = require('./package.json');
+var del = require('del');
 var browserSync = require('browser-sync').create();
 
 const siteRoot = './';
@@ -18,9 +23,28 @@ var banner = ['/*!\n',
   ' */\n',
   ''
 ].join('');
-/*
-gulp.task('js:compress', function() {
-  gulp.src('js/bootstrap.js')
+
+var jsAssets = [
+  'js/jquery.1.11.1.js',
+  'js/SmoothScroll.js',
+  'js/flickr.js',
+  'js/main.js',
+];
+
+var cssAssets = [
+  'css/bootstrap.css',
+  'css/style.css',
+  'css/font-awesome/css/font-awesome.css',
+]
+gulp.task('js:bundle', function() {
+  return gulp.src(jsAssets)
+    .pipe(concatJs('main.js'))
+    .pipe(gulp.dest('js/compiled'))
+});
+
+gulp.task('js:minify', function() {
+  return gulp.src('js/compiled/**/*.js')
+    .pipe(header(banner, { pkg : pkg } ))
     .pipe(minify({
         ext:{
             min:'.min.js'
@@ -28,43 +52,40 @@ gulp.task('js:compress', function() {
         noSource: true,
         ignoreFiles: ['min.js']
     }))
-    .pipe(gulp.dest('assets/js'))
+    .pipe(gulp.dest('js'))
 });
 
-// Compile SCSS
-gulp.task('css:compile', function() {
-  return gulp.src('./css/style.scss')
-    .pipe(sass.sync({
-      outputStyle: 'expanded'
-    }).on('error', sass.logError))
-    .pipe(gulp.dest('assets/css'))
-    .pipe(cleanCSS())
-    .pipe(rename({
-      suffix: '.min'
-    }))
-    .pipe(header(banner, {pkg: pkg}))
-    .pipe(gulp.dest('assets/css'))
-    .pipe(browserSync.stream());
+gulp.task('css:bundle', function () {
+  return gulp.src(cssAssets)
+    .pipe(concatCss("style.css"))
+    .pipe(gulp.dest('css/compiled'));
 });
 
-// CSS
-gulp.task('css', ['css:compile'], function(){});
+gulp.task('css:minify', function(){
+  return gulp.src('css/compiled/**/*.css')
+      .pipe(header(banner, { pkg : pkg } ))
+      .pipe(minifyCSS())
+      .pipe(rename('style.min.css'))
+      .pipe(gulp.dest('css'))
+});
 
-// JS
-gulp.task('js', ['js:compress'], function(){});
+gulp.task('cleanupJs', function(){
+  return del(["js/compiled/"]);
+});
 
-const child = require('child_process');
-const gutil = require('gulp-util');
-*/
+gulp.task('cleanupCss', function(){
+  return del(["css/compiled/"]);
+});
 
 // Configure the browserSync task
-gulp.task('browserSync', function() {
+gulp.task('browserSync', function(done) {
   browserSync.init({
     server: {
       baseDir: siteRoot
     },
     open: false
   });
+  done();
 });
 
 gulp.task('serve', () => {
@@ -76,9 +97,19 @@ gulp.task('serve', () => {
     }
   });
 
-  //gulp.watch('./css/*.css', gulp.parallel('css'));
-  gulp.watch('./*.html', browserSync.reload);
+  gulp.watch(['./css/*.css', '!./css/style.min.css'], gulp.series('css', 'reload'));
+  gulp.watch(['./js/*.js', '!./js/main.min.js'], gulp.series('js', 'reload'));
+  gulp.watch(['./*.html', '!index.html'], gulp.series('js', 'reload'));
 });
 
+gulp.task('reload', function (done) {
+  browserSync.reload();
+  done();
+});
+
+gulp.task('js', gulp.series('js:bundle', 'js:minify', 'cleanupJs'));
+gulp.task('css', gulp.series('css:bundle', 'css:minify', 'cleanupCss'));
+gulp.task('build', gulp.series('js', 'css'));
+
 // Default task
-gulp.task('default', gulp.parallel('serve'));
+gulp.task('default', gulp.series('serve'));
