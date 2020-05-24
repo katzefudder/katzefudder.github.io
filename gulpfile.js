@@ -12,7 +12,7 @@ var pkg = require('./package.json');
 var del = require('del');
 var browserSync = require('browser-sync').create();
 
-const siteRoot = './';
+const siteRoot = './website';
 
 var versionDate = new Date();
 
