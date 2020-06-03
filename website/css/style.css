@@ -613,3 +613,8 @@ color: #777;
 .glow {
 	text-shadow:1px 1px 10px #fff, 1px 1px 10px #666;
 }
+
+#blog p {
+	line-height: 1.8em;
+	font-size: 1.1em;
+}

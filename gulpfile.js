@@ -25,17 +25,18 @@ var banner = ['/*!\n',
 ].join('');
 
 var jsAssets = [
-  'js/jquery.1.11.1.js',
-  'js/SmoothScroll.js',
-  'js/flickr.js',
-  'js/main.js',
+  'website/js/jquery.1.11.1.js',
+  'website/js/SmoothScroll.js',
+  'website/js/flickr.js',
+  'website/js/main.js'
 ];
 
 var cssAssets = [
-  'css/bootstrap.css',
-  'css/style.css',
-  'css/font-awesome/css/font-awesome.css',
-]
+  'website/css/bootstrap.css',
+  'website/css/style.css',
+  'website/css/font-awesome/css/font-awesome.css'
+];
+
 gulp.task('js:bundle', function() {
   return gulp.src(jsAssets)
     .pipe(concatJs('main.js'))
@@ -66,7 +67,7 @@ gulp.task('css:minify', function(){
       .pipe(header(banner, { pkg : pkg } ))
       .pipe(minifyCSS())
       .pipe(rename('style.min.css'))
-      .pipe(gulp.dest('css'))
+      .pipe(gulp.dest('website/css'))
 });
 
 gulp.task('cleanupJs', function(){
